@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/statFrag">
+
+    <AutoCompleteTextView
+        android:layout_marginTop="30dp"
+        android:inputType="textNoSuggestions"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:hint="@string/placeholder1"
+        android:textColorHint="#ffffff"
+        android:imeOptions="actionDone"
+        android:id="@+id/user_edit"
+        android:textColor="#ffffffff" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="@string/button_name"
+        android:textAllCaps="false"
+        android:layout_below="@id/user_edit"
+        android:id="@+id/my_button"/>
+
+    <TextView
+        android:layout_marginTop="5dip"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/my_button"
+        android:layout_toEndOf="@+id/constName"
+        android:id="@+id/nameEdit"
+        android:textColor="#ffffffff"/>
+
+    <ImageView
+        android:layout_marginTop="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/moves_button"
+        android:id="@+id/img_box"
+        android:contentDescription="@string/pokeImg" />
+
+    <TextView
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/name"
+        android:layout_below="@id/my_button"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constName"/>
+
+    <TextView
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/type"
+        android:layout_below="@id/constName"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constType"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_below="@id/constName"
+        android:layout_toEndOf="@+id/constType"
+        android:id="@+id/typeEdit1"
+        android:textColor="#ffffffff" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_below="@id/constName"
+        android:layout_toEndOf="@+id/typeEdit1"
+        android:textColor="#ffffffff"
+        android:id="@+id/typeEdit2"/>
+
+    <TextView
+        android:layout_marginTop="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/ability"
+        android:layout_below="@+id/res_weak_button"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constAbility"/>
+
+    <TextView
+        android:layout_marginTop="5dip"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@+id/res_weak_button"
+        android:layout_toEndOf="@+id/constAbility"
+        android:textColor="#ffffffff"
+        android:id="@+id/abilityEdit"/>
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/hp"
+        android:layout_below="@id/constAbility"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constHP"/>
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constAbility"
+        android:layout_toEndOf="@+id/constHP"
+        android:textColor="#ffffffff"
+        android:id="@+id/hpEdit"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/atk"
+        android:layout_below="@id/constHP"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constAttack"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constHP"
+        android:layout_toEndOf="@+id/constAttack"
+        android:textColor="#ffffffff"
+        android:id="@+id/attackEdit"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/def"
+        android:layout_below="@id/constAttack"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constDef"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constAttack"
+        android:layout_toEndOf="@+id/constDef"
+        android:textColor="#ffffffff"
+        android:id="@+id/defEdit"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/spa"
+        android:layout_below="@id/constDef"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constSpA"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constDef"
+        android:layout_toEndOf="@+id/constSpA"
+        android:textColor="#ffffffff"
+        android:id="@+id/SpAEdit"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/spd"
+        android:layout_below="@id/constSpA"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constSpD"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constSpA"
+        android:layout_toEndOf="@+id/constSpD"
+        android:textColor="#ffffffff"
+        android:id="@+id/spDEdit"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/speed"
+        android:layout_below="@id/constSpD"
+        android:layout_gravity="start"
+        android:textColor="#ffffffff"
+        android:id="@+id/constSpeed"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/constSpD"
+        android:layout_toEndOf="@+id/constDef"
+        android:textColor="#ffffffff"
+        android:id="@+id/speedEdit"/>
+
+    <Button
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="@string/moves"
+        android:textAllCaps="false"
+        android:layout_below="@id/constSpeed"
+        android:id="@+id/moves_button"/>
+
+    <Button
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="@string/Res"
+        android:textAllCaps="false"
+        android:layout_below="@id/constType"
+        android:id="@+id/res_weak_button"/>
+
+</RelativeLayout>

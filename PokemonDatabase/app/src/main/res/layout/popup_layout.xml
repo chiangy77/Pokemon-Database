@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:background="#ffdfdfdf"
+    android:gravity="center">
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="30dp"
+        android:textSize="16sp"
+        android:text="Pokemon is resistant to"
+        android:gravity="center_horizontal"
+        android:id="@+id/resistances" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:id="@+id/resistanceTypes"
+        android:layout_below="@+id/resistances">
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="100dp"
+        android:textSize="16sp"
+        android:text="Pokemon is weak against"
+        android:layout_below="@+id/resistanceTypes"
+        android:gravity="center_horizontal"
+        android:id="@+id/weakness"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/weaknessTypes"
+        android:layout_below="@+id/weakness" >
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="100dp"
+        android:textSize="16sp"
+        android:text="Pokemon is immune to"
+        android:layout_below="@+id/weaknessTypes"
+        android:gravity="center_horizontal"
+        android:id="@+id/immune"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/immuneTypes"
+        android:layout_below="@+id/immune" >
+
+    </RelativeLayout>
+
+</RelativeLayout>
