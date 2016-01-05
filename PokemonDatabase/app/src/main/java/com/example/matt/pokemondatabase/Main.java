@@ -7,7 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,17 +18,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.*;
@@ -39,7 +38,7 @@ MoveFragmentClass.MoveFragmentListener {
     static String[][] abilities = new String[189][2];
     static String[][] types = new String[19][2];
     static String[][] type_efficiency = new String[325][3];
-    public static String[][] moves = new String[618][10];
+    static String[][] moves = new String[618][10];
     static String[][] move_damage_type = new String [4][2];
     static String[][] pokedex = new String[785][6];
     static String[][] pokemon_abilities = new String[1835][2];
@@ -52,7 +51,7 @@ MoveFragmentClass.MoveFragmentListener {
     String pokeId = "";
     String prevPokeId = "";
 
-    String[] leftPokemonMoves, rightPokemonMoves;
+    ArrayList<String> leftPokemonMoves, rightPokemonMoves;
 
     LeftFragmentClass frag;
 
@@ -62,16 +61,16 @@ MoveFragmentClass.MoveFragmentListener {
                               String[][] pokemon_abilities, String[][] pokemon_types,
                               String[][] abilities, String[][] pokemon_stats,
                               String[][] pokemon_moves) {
-        this.types = types;
+        Main.types = types;
         Main.moves = moves;
-        this.pokedex = pokedex;
-        this.type_efficiency = type_efficiency;
-        this.move_damage_type = move_damage;
-        this.pokemon_abilities = pokemon_abilities;
-        this.pokemon_types = pokemon_types;
-        this.abilities = abilities;
-        this.pokemon_stats = pokemon_stats;
-        this.pokemon_moves = pokemon_moves;
+        Main.pokedex = pokedex;
+        Main.type_efficiency = type_efficiency;
+        Main.move_damage_type = move_damage;
+        Main.pokemon_abilities = pokemon_abilities;
+        Main.pokemon_types = pokemon_types;
+        Main.abilities = abilities;
+        Main.pokemon_stats = pokemon_stats;
+        Main.pokemon_moves = pokemon_moves;
 
         Toast.makeText(this, "Read File Successfully!", Toast.LENGTH_LONG).show();
     }
@@ -89,16 +88,20 @@ MoveFragmentClass.MoveFragmentListener {
 
         Log.w("PokeApp", "Before replace " + pokeId);
 
-        if (tag.equals("left")) {
-            leftPokemonMoves = getMoves();
-            getSupportFragmentManager().beginTransaction().replace(R.id.leftContainer,
-                    new MoveFragmentClass().newInstance("left", leftPokemonMoves),"leftFrag").addToBackStack(null).commit();
-        } else if (tag.equals("right")) {
-            rightPokemonMoves = getMoves();
-            getSupportFragmentManager().beginTransaction().replace(R.id.rightContainer,
-                    new MoveFragmentClass().newInstance("right", rightPokemonMoves), "rightFrag").addToBackStack(null).commit();
-        } else {
-            Toast.makeText(this, "Moves button pressed but something went wrong :(", Toast.LENGTH_LONG).show();
+        switch (tag) {
+            case "left":
+                leftPokemonMoves = getMoves();
+                getSupportFragmentManager().beginTransaction().replace(R.id.leftContainer,
+                        new MoveFragmentClass().newInstance("left", leftPokemonMoves, getMovesInfo(leftPokemonMoves)), "leftFrag").addToBackStack(null).commit();
+                break;
+            case "right":
+                rightPokemonMoves = getMoves();
+                getSupportFragmentManager().beginTransaction().replace(R.id.rightContainer,
+                        new MoveFragmentClass().newInstance("right", rightPokemonMoves, getMovesInfo(rightPokemonMoves)), "rightFrag").addToBackStack(null).commit();
+                break;
+            default:
+                Toast.makeText(this, "Moves button pressed but something went wrong :(", Toast.LENGTH_LONG).show();
+                break;
         }
     }
 
@@ -107,15 +110,18 @@ MoveFragmentClass.MoveFragmentListener {
 
         String pokeDexNum;
 
-        if (tag.equals("left")) {
-            frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.leftContainer);
-            Log.w("PokeApp", "Left!");
-        }
-        else if (tag.equals("right")) {
-            frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.rightContainer);
-            Log.w("PokeApp", "Right!");
-        } else {
-            Log.w("PokeApp", tag);
+        switch (tag) {
+            case "left":
+                frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.leftContainer);
+                Log.w("PokeApp", "Left!");
+                break;
+            case "right":
+                frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.rightContainer);
+                Log.w("PokeApp", "Right!");
+                break;
+            default:
+                Log.w("PokeApp", tag);
+                break;
         }
 
         try {
@@ -126,8 +132,10 @@ MoveFragmentClass.MoveFragmentListener {
             return;
         }
 
+        Log.w("PokeAppppp", data);
+
         //Displays Pokemon image
-        //new ImageDisplay().execute(pokeDexNum);
+        new ImageDisplay().execute(AestheticFunctions.uncapitaliseIncludeDash(data));
 
         //Retrieves and sets Pokemon's name
         frag.setName(data);
@@ -147,29 +155,31 @@ MoveFragmentClass.MoveFragmentListener {
     @Override
     public void getSuperEffectiveMoves(String tag) {
 
-        String[] pokeType, moveFromFrag;
-        int iMax;
-        String type1 = "", type2 = "";
-        String type1int = "", type2int = "", moveTypeInt;
-        int z=0, y=0, position, counter = 0;
+        String[] pokeType;
+        ArrayList<String> moveFromFrag;
+        String type1, type2 = "";
+        String type1int, type2int, moveTypeInt;
+        int y=0, position;
         double effectiveness;
-        String [] superEffMoves = new String[100];
+        ArrayList<String> superEffMoves = new ArrayList<>();
 
         try {
-            if (tag.equals("right")) {
-                moveFromFrag = rightPokemonMoves;
-                frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.leftContainer);
-                Log.w("PokeApp", "Getting type from left");
-            }
-            else if (tag.equals("left")) {
-                moveFromFrag = leftPokemonMoves;
-                frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.rightContainer);
-                Log.w("PokeApp", "Getting type from right");
-            } else {
-                Log.w("PokeApp", tag);
-                Toast.makeText(this, "Something majorly wrong just happened. How did you do that? That's actually very" +
-                        " impressive but also a little worrying.", Toast.LENGTH_LONG).show();
-                return;
+            switch (tag) {
+                case "right":
+                    moveFromFrag = rightPokemonMoves;
+                    frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.leftContainer);
+                    Log.w("PokeApp", "Getting type from left");
+                    break;
+                case "left":
+                    moveFromFrag = leftPokemonMoves;
+                    frag = (LeftFragmentClass) getSupportFragmentManager().findFragmentById(R.id.rightContainer);
+                    Log.w("PokeApp", "Getting type from right");
+                    break;
+                default:
+                    Log.w("PokeApp", tag);
+                    Toast.makeText(this, "Something majorly wrong just happened. How did you do that? That's actually very" +
+                            " impressive but also a little worrying.", Toast.LENGTH_LONG).show();
+                    return;
             }
         } catch (ClassCastException e) {
             Log.w("PokeApp", e.toString());
@@ -187,11 +197,10 @@ MoveFragmentClass.MoveFragmentListener {
             return;
         }
 
-        if (pokeType[1] == "") {
-            iMax = 1;
-        } else {
+
+        if (!pokeType[1].equals("")) {
             type2 = AestheticFunctions.uncapitalise(pokeType[1]);
-            iMax = 2;
+
         }
 
         Log.w("PokeApp", type1);
@@ -201,46 +210,40 @@ MoveFragmentClass.MoveFragmentListener {
         type2int = typeNameToID(type2);
         Log.w("PokeApp", type1int);
 
-        for (position = 0; position < moveFromFrag.length; position++) {
+        for (position = 0; position < moveFromFrag.size(); position++) {
             //Get move type
             do {
                 y++;
-            } while (moves[y][1].equals(moveFromFrag[position]) == false);
+            } while (!AestheticFunctions.capitaliseRemoveDash(moves[y][1]).equals(moveFromFrag.get(position)));
             moveTypeInt = moves[y][2];
 
             //Retrieve how effective move is against this Pokemon
             effectiveness = effectiveness(moveTypeInt, type1int, type2int);
 
-            String printCheck = moveFromFrag[position] + " does " + Double.toString(effectiveness) + "% damage to " + type1 +
+            String printCheck = moveFromFrag.get(position) + " does " + Double.toString(effectiveness) + "% damage to " + type1 +
                     " type Pokemon. It's super effective!" + position;
 
             if (effectiveness > 1) {
                 Log.w("PokeApp", printCheck);
-                if (moves[y][7].equals("1") == false) { //Checks if move deals damage
-                    superEffMoves[counter] = moveFromFrag[position];
-                    counter++;
+                if (!moves[y][7].equals("1")) { //Checks if move deals damage
+                    superEffMoves.add(moveFromFrag.get(position));
                 }
             }
             y=0;
         }
 
-        String[] resizedArray = new String[counter];
-
-        for (int j = 0; j < counter; j++) {
-            resizedArray[j] = superEffMoves[j];
-        }
-
-        Arrays.sort(resizedArray);
-        Log.w("PokeApp", "Starting new Fragment");
-
-        if (tag.equals("left")) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.leftContainer,
-                    new MoveFragmentClass().newInstance("left", resizedArray)).addToBackStack(null).commit();
-        } else if (tag.equals("right")) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.rightContainer,
-                    new MoveFragmentClass().newInstance("right", resizedArray)).addToBackStack(null).commit();
-        } else {
-            Toast.makeText(this, "Moves button pressed but something went wrong :(", Toast.LENGTH_LONG).show();
+        try {
+            if (tag.equals("left")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.leftContainer,
+                        new MoveFragmentClass().newInstance("left", superEffMoves, getMovesInfo(superEffMoves))).addToBackStack(null).commit();
+            } else if (tag.equals("right")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.rightContainer,
+                        new MoveFragmentClass().newInstance("right", superEffMoves, getMovesInfo(superEffMoves))).addToBackStack(null).commit();
+            } else {
+                Toast.makeText(this, "Moves button pressed but something went wrong :(", Toast.LENGTH_LONG).show();
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(this, "This Pokemon does not possess any super effective moves against the other pokemon", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -402,9 +405,10 @@ MoveFragmentClass.MoveFragmentListener {
         @Override
         protected Void doInBackground(String... params) {
 
-            try {
+            String tempURL;
 
-                String tempURL = "http://pokeapi.co/media/img/" + params[0] + ".png";
+            try {
+                tempURL = "http://www.pokestadium.com/sprites/black-white/" + params[0] + ".png";
                 URL myFileUrl = new URL(tempURL);
                 Log.w("PokeApp", myFileUrl.toString());
 
@@ -418,7 +422,35 @@ MoveFragmentClass.MoveFragmentListener {
                 downloadBitmap = BitmapFactory.decodeStream(is);
                 Log.w("PokeApp", "Image stored within Bitmap");
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                try {
+                    if (params[0].equals("nidoran-f"))
+                        tempURL = "http://www.pokestadium.com/sprites/black-white/nidoranf.png";
+                    else if (params[0].equals("nidoran-m"))
+                        tempURL = "http://www.pokestadium.com/sprites/black-white/nidoranm.png";
+                    else if (params[0].equals("floette-eternal"))
+                        tempURL = "http://www.pokestadium.com/sprites/xy-fan/floette.png";
+                    else
+                        tempURL = "http://www.pokestadium.com/sprites/xy-fan/" + params[0] + ".png";
+
+                    URL myFileUrl = new URL(tempURL);
+                    Log.w("PokeApp", myFileUrl.toString());
+
+                    HttpURLConnection conn= (HttpURLConnection)myFileUrl.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+
+                    Log.w("PokeApp", "Connected to URL");
+
+                    InputStream is = conn.getInputStream();
+                    downloadBitmap = BitmapFactory.decodeStream(is);
+                    Log.w("PokeApp", "Image stored within Bitmap");
+
+                } catch (FileNotFoundException f) {
+                    f.printStackTrace();
+                }
+                catch (IOException f) {
+                    f.printStackTrace();
+                }
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -432,13 +464,15 @@ MoveFragmentClass.MoveFragmentListener {
 
             frag.pokePNG.setImageBitmap(downloadBitmap);
         }
-    }
+    } //TODO:Change website get
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         new LoadFilesTask(this, this).execute();
 
@@ -447,51 +481,15 @@ MoveFragmentClass.MoveFragmentListener {
 
     }
 
-//    @Override
-//    public void onClick(View arg0) {
-//
-//        String temp;
-//        int i;
-//
-//        Button b = (Button)findViewById(R.id.my_button);
-//        b.setClickable(false);
-//
-//        EditText input = (EditText) findViewById(R.id.user_edit);
-//
-//        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        mgr.hideSoftInputFromWindow(input.getWindowToken(), 0);
-//        temp = input.getText().toString();
-//
-//        for (i = 1; i < 719; i++) { //TODO: Include megas (pokedex.length)
-//            if (pokedex[i][2].equals(temp)) {
-//                Log.w("PokeApp", "Found a match!");
-//                Log.w("PokeApp", pokedex[i][0] + pokedex[i][1] + pokedex[i][2] + pokedex[i][3] +
-//                        pokedex[i][4] + pokedex[i][5]);
-//                break;
-//            }
-//        }
-//
-//        Log.w("PokeApp", "Finished for loop");
-//
-////        String str = AestheticFunctions.capitalise(pokedex[i][1]);
-////        EditText et = (EditText) findViewById(R.id.my_edit);
-////        et.setText(str);
-//
-//        //new LongRunningGetIO().execute(input.getText().toString());
-//        new ImageDisplay().execute(input.getText().toString());
-//
-//        b.setClickable(true);
-//    }
-
     public static String typeNameToID (String typeName) {
         int z=0;
 
-        if (typeName == "")
+        if (typeName.equals(""))
             return "";
         else {
             do {
                 z++;
-            } while (types[z][1].equalsIgnoreCase(typeName) == false);
+            } while (!types[z][1].equalsIgnoreCase(typeName));
             return types[z][0];
         }
     }
@@ -501,21 +499,21 @@ MoveFragmentClass.MoveFragmentListener {
 
         do {
             z++;
-        } while (type_efficiency[z][0].equals(moveType) == false);
+        } while (!type_efficiency[z][0].equals(moveType));
 
-        while (type_efficiency[z][1].equals(type1) == false)
+        while (!type_efficiency[z][1].equals(type1))
             z++;
 
         damageFactor = Integer.valueOf(type_efficiency[z][2]);
         counter++;
         z=0;
 
-        if (type2 != "") {
+        if (!type2.equals("")) {
             do {
                 z++;
-            } while (type_efficiency[z][0].equals(moveType) == false);
+            } while (!type_efficiency[z][0].equals(moveType));
 
-            while (type_efficiency[z][1].equals(type2) == false)
+            while (!type_efficiency[z][1].equals(type2))
                 z++;
 
             damageFactor *= Integer.valueOf(type_efficiency[z][2]);
@@ -534,7 +532,7 @@ MoveFragmentClass.MoveFragmentListener {
             i++;
             if (i > pokedex.length)
                 return null;
-        } while (pokedex[i][1].equalsIgnoreCase(name) == false);
+        } while (!pokedex[i][1].equalsIgnoreCase(name));
 
         if (flag == 0) //For general use
             return pokedex[i][0];
@@ -550,38 +548,37 @@ MoveFragmentClass.MoveFragmentListener {
         Arrays.sort(pokemonNames);
     }
 
-    private Integer findOtherForms (String id) {
+    private Map<String, String[]> getMovesInfo (ArrayList<String> moveSet) {
 
-        int i=0, counter = 0;
+        int counter = 0, i = 0;
+        Map<String, String[]> info = new HashMap<>();
 
         do {
-            i++;
-            if (pokedex[i][2].equals(id)) {
-                counter++;
-                Log.w("PokeApp", pokedex[i][1]);
-            }
-        } while (i < pokedex.length-1);
+            do {
+                i++;
+                if (i == moves.length)
+                    break;
+            } while (!moveSet.get(counter).equals(AestheticFunctions.capitaliseRemoveDash(moves[i][1])));
 
+            info.put(moveSet.get(counter), new String[]{moves[i][2], moves[i][3], moves[i][4]});
+            counter++;
+            i = 0;
 
+        } while (counter < moveSet.size());
 
-        if (counter > 1)
-            return 1;
-        else
-            return 0;
+        Log.w("PokeApp", "Finished putting move info");
+        return info;
     }
 
-    private String[] getMoves() {
+    private ArrayList<String> getMoves() {
 
-        String[] mMoves = new String[300];
-        String[] moveNames = new String[300];
+        ArrayList<String> mMoves = new ArrayList<>(), moveNames = new ArrayList<>();
         int counter=0,i=0, z=0;
-        int prevFlag = 0, curFlag = 0;
-
-        ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+        int prevFlag = 0, curFlag;
 
         do {
             if (pokemon_moves[i][0].equals(pokeId)) {
-                mMoves[counter] = pokemon_moves[i][1];
+                mMoves.add(counter, pokemon_moves[i][1]);
                 counter++;
                 curFlag = 1;
             } else {
@@ -602,38 +599,26 @@ MoveFragmentClass.MoveFragmentListener {
                 z++;
                 if (z == moves.length)
                     break;
-            } while (mMoves[counter].equals(moves[z][0]) == false);
+            } while (!mMoves.get(counter).equals(moves[z][0]));
 
-            Log.w("PokeApp", "Broken out of loop" + counter);
+            moveNames.add(AestheticFunctions.capitaliseRemoveDash(moves[z][1]));
 
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put(moves[z][1], moves[z][2]);
-
-            list.add(map);
-
-            moveNames[counter] = moves[z][1];
             counter++;
             z = 0;
 
-        } while (mMoves[counter] != null);
+        } while (counter < mMoves.size());
+
+        Collections.sort(moveNames);
 
         Log.w("PokeApp", "I'm out. Elements in array: " + counter);
 
-        String[] resizedArray = new String[counter];
-
-        for (int j = 0; j < counter; j++) {
-            resizedArray[j] = moveNames[j];
-        }
-
-        Arrays.sort(resizedArray);
-
-        return resizedArray;
+        return moveNames;
     }
 
     private String[] getStats (String id) {
         String[] stats = new String[6];
         int counter=0,i=0;
-        int prevFlag = 0, curFlag = 0;
+        int prevFlag = 0, curFlag;
 
         do {
 
@@ -660,7 +645,7 @@ MoveFragmentClass.MoveFragmentListener {
         String[] typeIDs = new String[2];
         String[] typeNames = new String[2];
         int counter = 0, i = 1, z = 0;
-        int prevFlag = 0, curFlag = 0;
+        int prevFlag = 0, curFlag;
 
         do {
 
@@ -684,7 +669,7 @@ MoveFragmentClass.MoveFragmentListener {
                 z++;
                 if (z == types.length)
                     break;
-            } while (typeIDs[j].equals(types[z][0]) == false);
+            } while (!typeIDs[j].equals(types[z][0]));
 
 
             typeNames[j] = types[z][1];
@@ -697,32 +682,12 @@ MoveFragmentClass.MoveFragmentListener {
         return typeNames;
     }
 
-    private String getNameFromId (String id) {
-        int i;
-
-        for (i = 1; i < pokedex.length; i++) {
-            if (pokedex[i][0].equals(id)) {
-                Log.w("PokeApp", "Found a match!");
-                Log.w("PokeApp", pokedex[i][0] + pokedex[i][1] + pokedex[i][2] + pokedex[i][3] +
-                        pokedex[i][4] + pokedex[i][5]);
-                break;
-            }
-        }
-
-        Log.w("PokeApp", "Finished for loop");
-
-        pokeId = pokedex[i][2];
-        String str = AestheticFunctions.capitalise(pokedex[i][1]);
-
-        return str;
-    }
-
     private String[] getAbilities (String id) {
 
         String[] abilityIDs = new String[3];
         String[] abilityNames = new String[3];
         int counter = 0, i = 1, z = 0;
-        int prevFlag = 0, curFlag = 0;
+        int prevFlag = 0, curFlag;
 
         do {
 
@@ -746,7 +711,7 @@ MoveFragmentClass.MoveFragmentListener {
                 z++;
                 if (z == abilities.length)
                     break;
-            } while (abilityIDs[j].equals(abilities[z][0]) == false);
+            } while (!abilityIDs[j].equals(abilities[z][0]));
 
 
             abilityNames[j] = abilities[z][1];

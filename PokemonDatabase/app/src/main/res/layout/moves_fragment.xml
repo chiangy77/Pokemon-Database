@@ -3,14 +3,16 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/movesList"
         android:layout_above="@+id/SEbutton"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:indicatorLeft="?android:attr/expandableListPreferredChildIndicatorLeft"
+        >
 
-    </ListView>
+    </ExpandableListView>
 
     <Button
         android:layout_width="match_parent"

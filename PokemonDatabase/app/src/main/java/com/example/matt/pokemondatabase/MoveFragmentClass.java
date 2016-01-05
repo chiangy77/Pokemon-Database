@@ -7,23 +7,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
-public class MoveFragmentClass extends Fragment {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Map;
+
+public class MoveFragmentClass extends Fragment implements Serializable{
 
 
     private String fragmentTag;
 
     public MoveFragmentClass(){}
 
-    public static MoveFragmentClass newInstance(String tag, String[] moves){
+    public static MoveFragmentClass newInstance(String tag, ArrayList<String> moves, Map<String, String[]> moveInfo){
         MoveFragmentClass mMoveFragmentClass = new MoveFragmentClass();
         Bundle bundle = new Bundle();
         bundle.putString ("tag",tag);
-        bundle.putStringArray("moves", moves);
+        bundle.putStringArrayList("moves", moves);
+        bundle.putSerializable("movesInfo", (Serializable)moveInfo);
         mMoveFragmentClass.setArguments(bundle);
 
         return mMoveFragmentClass;
@@ -51,10 +55,21 @@ public class MoveFragmentClass extends Fragment {
 
         fragmentTag = getArguments().getString("tag");
 
-        MoveClassArrayAdapter movesAdapter = new MoveClassArrayAdapter(getActivity(),
-                R.layout.move_layout, R.id.row_item, getArguments().getStringArray("moves"));
-        ListView movesView = (ListView) view.findViewById(R.id.movesList);
-        movesView.setAdapter(movesAdapter);
+        final MoveClassExpandableAdapter adapter = new MoveClassExpandableAdapter(getActivity(),
+                getArguments().getStringArrayList("moves"), (Map) getArguments().getSerializable("movesInfo"));
+
+
+        ExpandableListView movesView = (ExpandableListView) view.findViewById(R.id.movesList);
+        movesView.setAdapter(adapter);
+
+        movesView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String selected = (String) adapter.getGroup(groupPosition);
+                Toast.makeText(getActivity(), selected, Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
 
         Button button = (Button) view.findViewById(R.id.SEbutton);
         button.setOnClickListener(

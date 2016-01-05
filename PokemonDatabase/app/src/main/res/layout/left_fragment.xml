@@ -4,7 +4,7 @@
     android:id="@+id/statFrag">
 
     <AutoCompleteTextView
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:inputType="textNoSuggestions"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -37,8 +37,8 @@
 
     <ImageView
         android:layout_marginTop="7dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/moves_button"
         android:id="@+id/img_box"

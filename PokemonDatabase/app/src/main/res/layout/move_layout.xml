@@ -7,10 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/row_item"
-        android:textAppearance="?android:textAppearanceLargePopupMenu"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
+        android:textSize="20sp"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Hello World"
         android:textColor="#ffffffff" />
 

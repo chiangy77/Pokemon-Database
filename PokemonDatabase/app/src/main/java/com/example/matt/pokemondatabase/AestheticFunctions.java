@@ -2,11 +2,6 @@ package com.example.matt.pokemondatabase;
 
 import android.util.Log;
 
-import java.security.InvalidParameterException;
-
-/**
- * Created by Matt on 21/12/2015.
- */
 public class AestheticFunctions {
 
     public static final String[][] typeColours = new String[][]{
@@ -79,9 +74,9 @@ public class AestheticFunctions {
 
     public static String returnColour (String colour) {
 
-        for (int i = 0; i < typeColours.length; i++) {
-            if (colour.equals(typeColours[i][0]))
-                return typeColours[i][1];
+        for (String[] typeColour : typeColours) {
+            if (colour.equals(typeColour[0]))
+                return typeColour[1];
         }
 
         Log.w("PokeApp", "Did not find matching colour");
@@ -90,12 +85,23 @@ public class AestheticFunctions {
 
     public static String returnColourFromID (String colour) {
 
-        for (int i = 0; i < typeIDColours.length; i++) {
-            if (colour.equals(typeIDColours[i][0]))
-                return typeIDColours[i][1];
+        for (String[] typeIDColour : typeIDColours) {
+            if (colour.equals(typeIDColour[0]))
+                return typeIDColour[1];
         }
 
         Log.w("PokeApp", "Did not find matching colour");
         return "#000000";
+    }
+
+    public static String returnNameFromID (String colour) {
+
+        for (int i = 0; i < typeIDColours.length; i++) {
+            if (colour.equals(typeIDColours[i][0]))
+                return capitalise(typeColours[i][0]);
+        }
+
+        Log.w("PokeApp", "Did not find matching type");
+        return "Broken";
     }
 }

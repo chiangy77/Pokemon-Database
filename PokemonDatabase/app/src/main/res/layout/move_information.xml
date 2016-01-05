@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:text="Type: "
+        android:textColor="#FFFFFF"
+        android:id="@+id/typeTitle"/>
+
+    <TextView
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/typeTitle"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:id="@+id/type"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:layout_below="@+id/typeTitle"
         android:text="Power: "
+        android:textColor="#FFFFFF"
         android:id="@+id/movePowerTitle"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_toLeftOf="@+id/movePowerTitle"
+        android:layout_below="@+id/type"
+        android:layout_toRightOf="@+id/movePowerTitle"
+        android:textColor="#FFFFFF"
         android:id="@+id/movePower"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:layout_below="@+id/movePowerTitle"
         android:text="PP:"
+        android:textColor="#FFFFFF"
         android:id="@+id/movePPTitle"/>
 
     <TextView
@@ -29,7 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_below="@+id/movePower"
-        android:layout_toLeftOf="@+id/movePPTitle"
+        android:layout_toRightOf="@+id/movePPTitle"
+        android:textColor="#FFFFFF"
         android:id="@+id/movePP"/>
 
 </RelativeLayout>
